@@ -111,11 +111,11 @@ In Kubernetes, create a Secret and point the Helm chart at it (preferred over th
 kubectl create secret generic ironwolf-license -n ironwolf-system \
   --from-literal=license-key="<your-key>"
 
-helm upgrade --install ironwolf deploy/helm/ironwolf -n ironwolf-system \
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwolf-system \
   --set operator.licenseKeySecret=ironwolf-license
 ```
 
-`./scripts/deploy-remote.sh HOST USER --license-key '<your-key>'` (or `IRONWOLF_LICENSE_KEY` in
+`# packaged operator tooling (provided with your license) HOST USER --license-key '<your-key>'` (or `IRONWOLF_LICENSE_KEY` in
 the environment) does the same for a remote deploy. See `docs/helm-values.md` for the full
 `operator.licenseKey*` reference.
 
@@ -675,7 +675,7 @@ The REST API provides CRUD operations for all CRDs and host management:
 
 ```bash
 # Build
-make build-tools
+# CLI tools ship with the commercial package
 
 # List all hosts
 ./bin/bmh-inspector list
@@ -696,7 +696,7 @@ Use `-n` / `--namespace` to target a specific namespace (defaults to the current
 
 ```bash
 # Build
-make build-tools
+# CLI tools ship with the commercial package
 
 # Check firmware status
 ./bin/firmware-updater status

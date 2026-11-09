@@ -1,6 +1,6 @@
 # Production Checklist
 
-Operator runbook (ops gates for a live cluster) — not a list of unfinished product code. Product package status: `GET /api/v1/package/readiness`; Helm seeds in [`deploy/helm/ironwolf/values-package.yaml`](../deploy/helm/ironwolf/values-package.yaml) (see [helm-values.md](helm-values.md)).
+Operator runbook (ops gates for a live cluster) — not a list of unfinished product code. Product package status: `GET /api/v1/package/readiness`; Helm seeds in [`values-package.yaml`](../values-package.yaml) (see [helm-values.md](helm-values.md)).
 
 Everything to verify before running IronWolf in production.
 
@@ -117,7 +117,7 @@ IronWolf deploys 25 validating webhooks for its CRD types. Webhook configuration
   ```bash
   kubectl get svc -n ironwolf-system | grep webhook-service
   ```
-  This Service (`deploy/helm/ironwolf/templates/webhook-service.yaml`) is what every validating
+  This Service (`templates/webhook-service.yaml`) is what every validating
   webhook's `clientConfig.service` and the CRD conversion webhook (below) call — without it every
   admission/conversion request fails (or is silently skipped under `failurePolicy: Ignore`).
 
@@ -407,20 +407,20 @@ helm list -n ironwolf-system
 # 3. Backup CRD resources
 make backup
 # OR
-./scripts/backup-state.sh
+# Backup CRDs/state with your platform backup tool or Velero
 
 # 4. Update CRDs first (Helm doesn't manage CRD upgrades)
 kubectl apply -f config/base/crds/bases/
 
 # 5. Upgrade Helm release
-helm upgrade ironwolf deploy/helm/ironwolf/ \
+helm upgrade ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --set image.tag=v1.1.0 \
   --set dashboard.image.tag=v1.1.0
 
 # 6. Verify
-./scripts/health-check.sh
-make selftest
+kubectl get pods -n ironwolf-system
+kubectl get pods -n ironwolf-system
 ```
 
 ### Rollback
@@ -433,11 +433,11 @@ helm rollback ironwolf --namespace ironwolf-system
 
 ```bash
 # Backup all CRD resources
-./scripts/backup-state.sh
+# Backup CRDs/state with your platform backup tool or Velero
 # Creates: backup-<timestamp>.tar.gz
 
 # Restore from backup
-./scripts/restore-state.sh /path/to/backup-<timestamp>.tar.gz
+# Restore from your platform backup / Velero restore /path/to/backup-<timestamp>.tar.gz
 ```
 
 Schedule regular backups via CronJob or the `HardwareBackup` CRD.
@@ -478,10 +478,10 @@ Deploy separate IronWolf instances per namespace for full isolation.
 
 ```bash
 # Full health check
-./scripts/health-check.sh
+kubectl get pods -n ironwolf-system
 
 # Post-install self-test
-make selftest
+kubectl get pods -n ironwolf-system
 
 # Verify all CRDs
 kubectl get crds | grep -E 'bmo\.metal3\.io|image\.ironwolf\.io' | wc -l   # Should match config/base/crds/bases (27)

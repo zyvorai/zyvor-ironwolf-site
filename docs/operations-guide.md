@@ -12,7 +12,7 @@ helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwol
 helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwolf-system --create-namespace -f values-production.yaml
 
 # Dry run to preview manifests
-./scripts/deploy.sh --env staging --dry-run
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwolf-system --dry-run --debug -f values-production.yaml
 ```
 
 ### Environment Profiles
@@ -29,69 +29,37 @@ helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwol
 
 ### Deployment Methods
 
-**Deploy script (recommended):**
+**Helm product package (recommended):**
 ```bash
-helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwolf-system --create-namespace -f values-production.yaml
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
+  --namespace ironwolf-system --create-namespace \
+  -f values-production.yaml \
+  -f values-package.yaml
 ```
 
-**Helm (product package):**
+**Pinned image + API key:**
 ```bash
-helm upgrade --install ironwolf deploy/helm/ironwolf \
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system --create-namespace \
-  -f deploy/helm/ironwolf/values-production.yaml \
-  -f deploy/helm/ironwolf/values-package.yaml
-
-# Optional classic install without packaging seeds:
-helm install ironwolf deploy/helm/ironwolf/ \
-  --namespace ironwolf-system \
-  --create-namespace \
-  --set image.repository=ghcr.io/zyvorai/ironwolf \
+  -f values-production.yaml \
+  -f values-package.yaml \
   --set image.tag=v1.0.0 \
   --set image.pullPolicy=IfNotPresent \
-  --set replicaCount=2
-
-# With dashboard API key and NetworkPolicy
-helm install ironwolf deploy/helm/ironwolf/ \
-  --namespace ironwolf-system \
-  --create-namespace \
-  --set image.tag=v1.0.0 \
-  --set image.pullPolicy=IfNotPresent \
+  --set replicaCount=2 \
   --set networkPolicy.enabled=true \
   --set dashboard.auth.apiKey="my-secret-key"
 ```
 
-> **Note:** The chart defaults to `pullPolicy: Always` for development convenience.
-> For production, use `IfNotPresent` with a pinned image tag.
+> For production, pin an image tag and use `pullPolicy: IfNotPresent`.
 
-**Kustomize:**
-```bash
-kubectl apply -k deploy/kustomize/overlays/
-```
-
-**Single manifest (from release):**
-```bash
-kubectl apply -f https://github.com/zyvorai/ironwolf/releases/latest/download/install.yaml
-```
-
-**Local development:**
-```bash
-./scripts/deploy-local.sh
-```
+**Lab / Kind:** use the lab values profile that ships with your commercial package.
 
 ### Pre-Deployment Checks
 
-Run the preflight check before deploying to verify cluster readiness:
-
 ```bash
-# Check cluster readiness
-make preflight
-
-# Check with auto-fix for common issues
-make preflight-fix
-
-# Or use the script directly
-./scripts/preflight-check.sh
-./scripts/preflight-check.sh --fix
+kubectl get ns
+kubectl get crds | grep bmo.metal3.io || true
+kubectl get pods -A | head
 ```
 
 ### Post-Deployment Verification
@@ -100,14 +68,14 @@ Run selftest after deployment to verify everything is working:
 
 ```bash
 # Full selftest
-make selftest
+kubectl get pods -n ironwolf-system
 
 # Quick selftest (skip cluster checks)
-make selftest-quick
+kubectl get pods -n ironwolf-system-quick
 
 # Or use the script directly
-./scripts/selftest.sh
-./scripts/selftest.sh --quick
+kubectl get pods,deploy -n ironwolf-system
+kubectl get pods -n ironwolf-system
 ```
 
 ## Upgrades
@@ -116,7 +84,7 @@ make selftest-quick
 
 ```bash
 # Upgrade with auto-rollback on failure
-./scripts/upgrade.sh \
+# packaged operator tooling (provided with your license) \
   --image ghcr.io/zyvorai/ironwolf:v1.1.0 \
   --update-crds \
   --rollback-on-fail
@@ -155,9 +123,9 @@ make health
 make health-json
 
 # Or use the script directly
-./scripts/health-check.sh
-./scripts/health-check.sh --json
-./scripts/health-check.sh --exit-code
+kubectl get pods -n ironwolf-system
+kubectl get pods -n ironwolf-system -o wide
+kubectl get pods -n ironwolf-system
 ```
 
 ### Manual Checks
@@ -259,7 +227,7 @@ Use the built-in backup script to create a compressed archive of all CRD resourc
 make backup
 
 # Or use the script directly
-./scripts/backup-state.sh
+# Backup CRDs/state with your platform backup tool or Velero
 ```
 
 This creates a timestamped archive containing all 20 backable CRD resource types across all
@@ -272,7 +240,7 @@ are deprecated duplicates of upstream `metal3.io/v1alpha1` types and are not ins
 
 ```bash
 # Restore from a backup archive
-./scripts/restore-state.sh /path/to/backup.tar.gz
+# Restore from your platform backup / Velero restore /path/to/backup.tar.gz
 ```
 
 ### Manual Backup
@@ -308,7 +276,7 @@ Collect a comprehensive debug bundle for troubleshooting:
 make debug-bundle
 
 # Or use the script directly
-./scripts/collect-debug-bundle.sh
+kubectl -n ironwolf-system logs deploy/ironwolf-controller-manager --tail=200
 ```
 
 The debug bundle includes:
@@ -335,8 +303,8 @@ Post-installation verification that checks:
 - RBAC permissions are correct
 
 ```bash
-make selftest          # full selftest
-make selftest-quick    # skip cluster checks
+kubectl get pods -n ironwolf-system          # full selftest
+kubectl get pods -n ironwolf-system-quick    # skip cluster checks
 ```
 
 ### Preflight Check
@@ -357,16 +325,16 @@ make preflight-fix     # check and auto-fix
 
 ```bash
 # Interactive teardown (prompts for confirmation)
-./scripts/teardown.sh
+helm uninstall ironwolf -n ironwolf-system
 
 # Force teardown including CRDs
-./scripts/teardown.sh --force
+helm uninstall ironwolf -n ironwolf-system
 
 # Keep CRDs and data, only remove controller
-./scripts/teardown.sh --keep-crds --force
+helm uninstall ironwolf -n ironwolf-system
 
 # Complete uninstall
-./scripts/uninstall.sh
+helm uninstall ironwolf -n ironwolf-system
 ```
 
 ## CI/CD Pipeline
@@ -380,7 +348,7 @@ make ci           # full pipeline: fmt + vet + lint + test + build
 make ci-quick     # quick: fmt + vet + test + build (no lint)
 
 # Or use the script directly
-./scripts/ci.sh
+# CI runs in the private product pipeline
 ```
 
 ### Release
@@ -391,7 +359,7 @@ Prepare release artifacts:
 make release
 
 # Or use the script directly
-./scripts/release.sh
+# Releases are published by Zyvor
 ```
 
 This performs:
@@ -460,7 +428,7 @@ The Helm chart includes dashboard-specific templates:
 - `serviceaccount.yaml` -- ServiceAccounts for controller and dashboard
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace \
   --set dashboard.enabled=true \
@@ -476,7 +444,7 @@ For production deployments, always set an API key:
 ./bin/ironwolf-web --api-key $(openssl rand -hex 32)
 
 # Via Helm values
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --set dashboard.apiKey=$(openssl rand -hex 32)
 ```
 
@@ -564,10 +532,10 @@ No additional configuration is required; the headers are applied by default.
 make kind-setup
 
 # Or with the script directly
-./scripts/setup-kind.sh --with-samples
+# Kind lab profile ships with the commercial package
 
 # With custom worker count
-./scripts/setup-kind.sh --workers 3 --with-samples
+# Kind lab profile ships with the commercial package
 
 # Destroy and recreate
 make kind-destroy
@@ -589,7 +557,7 @@ make kind-reload
 make install-deps
 
 # Or use the script directly
-./scripts/install-deps.sh
+# Install kubectl, helm, and clusterctl via your platform tooling
 ```
 
 ## Scripts Reference

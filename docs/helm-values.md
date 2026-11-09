@@ -1,6 +1,6 @@
 # Helm Chart Reference
 
-Chart location: `deploy/helm/ironwolf/`
+Chart location: ``
 
 ## Values Quick Reference
 
@@ -110,12 +110,12 @@ dashboard:
 
 ```bash
 # Default install
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace
 
 # Production install
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace \
   --set image.tag=v1.0.0 \
@@ -265,7 +265,7 @@ make install
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `grafana.dashboards.enabled` | bool | `false` | Provision Grafana dashboards as ConfigMaps. When enabled, dashboard JSON files from `deploy/helm/ironwolf/dashboards/` are created as ConfigMaps that the Grafana sidecar can auto-discover. |
+| `grafana.dashboards.enabled` | bool | `false` | Provision Grafana dashboards as ConfigMaps. When enabled, dashboard JSON files from `dashboards/` are created as ConfigMaps that the Grafana sidecar can auto-discover. |
 | `grafana.dashboards.labels` | object | `{}` | Labels to add to the dashboard ConfigMaps. Typically set to `grafana_dashboard: "1"` so the Grafana sidecar picks them up. |
 | `grafana.dashboards.annotations` | object | `{}` | Annotations to add to the dashboard ConfigMaps (e.g., to specify the Grafana folder). |
 
@@ -374,7 +374,7 @@ make install
 ### Minimal Dev
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --set leaderElection.enabled=false \
   --set dashboard.auth.enabled=false \
   --set networkPolicy.enabled=false
@@ -383,7 +383,7 @@ helm install ironwolf deploy/helm/ironwolf/ \
 ### Production HA
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system --create-namespace \
   --set replicaCount=2 \
   --set image.tag=v1.0.0 \
@@ -412,7 +412,7 @@ helm install ironwolf deploy/helm/ironwolf/ \
 ### Production HA with Autoscaling Dashboard
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system --create-namespace \
   --set replicaCount=2 \
   --set image.tag=v1.0.0 \
@@ -428,7 +428,7 @@ helm install ironwolf deploy/helm/ironwolf/ \
 ### Dashboard Only (External Operator)
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --set replicaCount=0 \
   --set dashboard.enabled=true \
   --set dashboard.auth.apiKey="my-key"
@@ -437,7 +437,7 @@ helm install ironwolf deploy/helm/ironwolf/ \
 ### Monitoring Stack
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system --create-namespace \
   --set serviceMonitor.enabled=true \
   --set serviceMonitor.labels.release=prometheus \
@@ -449,14 +449,14 @@ helm install ironwolf deploy/helm/ironwolf/ \
 
 ## Product package overlay
 
-Opinionated out-of-box packaging lives in `deploy/helm/ironwolf/values-package.yaml`.
+Opinionated out-of-box packaging lives in `values-package.yaml`.
 Chain it after production (or observability) values:
 
 ```bash
-helm upgrade --install ironwolf deploy/helm/ironwolf \
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system --create-namespace \
-  -f deploy/helm/ironwolf/values-production.yaml \
-  -f deploy/helm/ironwolf/values-package.yaml \
+  -f values-production.yaml \
+  -f values-package.yaml \
   --set dashboard.observability.grafanaUrl=http://HOST:30301
 ```
 
@@ -476,7 +476,7 @@ After install, check readiness: `GET /api/v1/package/readiness`.
 ## Upgrading
 
 ```bash
-helm upgrade ironwolf deploy/helm/ironwolf/ \
+helm upgrade ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --set image.tag=v1.1.0 \
   --set dashboard.image.tag=v1.1.0

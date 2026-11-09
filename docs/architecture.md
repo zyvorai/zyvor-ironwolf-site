@@ -491,7 +491,7 @@ All metrics are exposed on `:8080/metrics` in Prometheus format:
 
 ## Helm Chart
 
-The Helm chart in `deploy/helm/ironwolf/` includes templates for:
+The Helm chart in `` includes templates for:
 
 | Template | Resource |
 |----------|----------|

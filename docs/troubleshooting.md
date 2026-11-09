@@ -4,7 +4,7 @@
 
 ```bash
 # One-liner status check
-./scripts/health-check.sh --json | python3 -m json.tool
+kubectl get pods -n ironwolf-system -o wide
 
 # Controller logs (last 100 lines)
 kubectl logs -n ironwolf-system \
@@ -20,7 +20,7 @@ for kind in cc fwp mw pp hwp rs ap np sp ep tp hwb rj; do
 done
 
 # Post-install verification
-make selftest
+kubectl get pods -n ironwolf-system
 
 # Collect debug bundle for deeper analysis
 make debug-bundle
@@ -603,7 +603,7 @@ kubectl logs -n ironwolf-system \
 make debug-bundle
 
 # Or use the script directly
-./scripts/collect-debug-bundle.sh
+kubectl -n ironwolf-system logs deploy/ironwolf-controller-manager --tail=200
 ```
 
 The bundle includes logs, pod descriptions, CRD resources, events, RBAC configs, webhook configs, and node information. Share this archive when reporting issues.
@@ -611,7 +611,7 @@ The bundle includes logs, pod descriptions, CRD resources, events, RBAC configs,
 ### Interpret Selftest Output
 
 ```bash
-make selftest
+kubectl get pods -n ironwolf-system
 ```
 
 Selftest checks (and what failures mean):
@@ -674,9 +674,9 @@ kubectl patch clusterclaim <name> \
 ## Getting Help
 
 1. Check this troubleshooting guide
-2. Run `make selftest` and review the output
+2. Run `kubectl get pods -n ironwolf-system` and review the output
 3. Run `make debug-bundle` and save the archive
-4. Run `./scripts/health-check.sh --json` and save the output
+4. Run `kubectl get pods -n ironwolf-system -o wide` and save the output
 5. Check controller logs: `kubectl logs -n ironwolf-system -l app.kubernetes.io/name=ironwolf --tail=500 > bmo-debug.log`
 6. Open an issue with:
    - Debug bundle archive

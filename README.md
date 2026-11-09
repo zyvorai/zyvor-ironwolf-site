@@ -11,7 +11,7 @@
 [![30-day PoC](https://img.shields.io/badge/30--day_PoC-000000?style=for-the-badge)](https://zyvor.dev/poc?utm_source=github&utm_medium=ironwolf&utm_campaign=readme_hero)
 [![Read the docs](https://img.shields.io/badge/Read_the_docs-63e6be?style=for-the-badge)](https://zyvorai.github.io/zyvor-ironwolf-site/)
 
-<img src="assets/social/og-image.jpg" alt="IronWolf — Metal3 bare-metal automation for enterprise fleets" width="100%">
+<img src="assets/hero/ironwolf-hero-dark.jpg" alt="IronWolf — Metal3 bare-metal automation for enterprise fleets" width="100%">
 
 ### Claim the metal. Keep the fleet honest.
 
@@ -39,6 +39,17 @@
 | Helm left you with a blank install | Product package seeds: branding, notify prefs, starter AlertPolicy, readiness API |
 
 IronWolf sits on Metal3 BareMetalHost. It does not replace Ironic or BMO — it automates the day-2 fleet around them.
+
+## The console
+
+Store-style dashboard for hosts, approvals, and capacity planning. Light and dark themes; quarantine and two-person review are first-class.
+
+| Light | Dark |
+|---|---|
+| <img src="assets/screens/hosts-desktop-light.jpg" alt="Hosts browse, light"> | <img src="assets/screens/hosts-desktop-dark.jpg" alt="Hosts browse, dark"> |
+| <img src="assets/screens/approvals-desktop-light.jpg" alt="Approvals, light"> | <img src="assets/screens/capacity-desktop-dark.jpg" alt="Capacity planner, dark"> |
+
+*UI frames are product concept shots of the IronWolf dashboard language (hosts, approvals, capacity).*
 
 ## What’s in the product package
 

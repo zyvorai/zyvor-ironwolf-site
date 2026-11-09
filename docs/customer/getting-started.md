@@ -5,7 +5,7 @@
 | Requirement | Notes |
 |-------------|--------|
 | Kubernetes cluster | With Metal3 BMO / Ironic (or lab equivalent) |
-| IronWolf operator + CRDs | Helm chart under `deploy/helm/ironwolf` |
+| IronWolf operator + CRDs | Helm chart from your commercial package (`oci://ghcr.io/zyvorai/charts/ironwolf`) |
 | Dashboard | Default **`:8888`** (TLS on by default) |
 | Auth | API key via `IRONWOLF_API_KEY` (roles: admin / operator / viewer; optional `:namespace` tenant scope) |
 

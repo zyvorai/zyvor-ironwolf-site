@@ -19,20 +19,20 @@ IronWolf validates platform combinations using `config/lab/certification-matrix.
 ```bash
 # Full two-node (requires lab SSH)
 IRONWOLF_LAB_HOST=<ephemeral-ip> IRONWOLF_LAB_USER=operator \
-  ./scripts/run-lab-e2e-automation.sh --profile two-node
+  # packaged operator tooling (provided with your license) --profile two-node
 
 # Matrix runner (used by nightly workflow)
-./scripts/run-certification-matrix.sh lab-libvirt-two-node
+# packaged operator tooling (provided with your license) lab-libvirt-two-node
 
 # Physical BMC SKU (secrets required)
 export IRONWOLF_BMC_ADDRESS=https://bmc.example
 export IRONWOLF_BMC_USER=root
 export IRONWOLF_BMC_PASSWORD=secret
 export IRONWOLF_BMC_INSECURE=1   # lab only
-./scripts/run-certification-matrix.sh physical-dell-idrac
+# packaged operator tooling (provided with your license) physical-dell-idrac
 
 # RestoreJob dry-run on a cluster host
-IRONWOLF_RESTORE_HOST=node-1 ./scripts/run-certification-matrix.sh restorejob-live
+IRONWOLF_RESTORE_HOST=node-1 # packaged operator tooling (provided with your license) restorejob-live
 ```
 
 ## Nightly CI
@@ -44,4 +44,4 @@ Physical SKU jobs run when `IRONWOLF_BMC_ADDRESS` (repository secret) is set.
 
 1. Add a row to `certification-matrix.yaml` with `bmc`, `provisioner`, and `image`.
 2. Document BMC credentials and network in `config/lab/defaults.yaml`.
-3. Run `./scripts/run-certification-matrix.sh <profile-id>` on the lab host.
+3. Run `# packaged operator tooling (provided with your license) <profile-id>` on the lab host.

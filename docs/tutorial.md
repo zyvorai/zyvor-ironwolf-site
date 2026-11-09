@@ -1,5 +1,7 @@
 # IronWolf Tutorial
 
+> **Public docs:** Install from the commercial Helm package (`oci://ghcr.io/zyvorai/charts/ironwolf`). Product source is private.
+
 A hands-on, step-by-step tutorial for deploying and using IronWolf to manage bare metal infrastructure at scale.
 
 ## Table of Contents
@@ -70,12 +72,12 @@ Helm handles CRD installation, RBAC, namespace creation, and deployment. Environ
 
 ```bash
 # Install with defaults
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace
 
 # Install with production settings
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace \
   --set image.repository=ghcr.io/zyvorai/ironwolf \
@@ -121,7 +123,7 @@ dashboard:
 ### Option D: Kustomize
 
 ```bash
-kubectl apply -k deploy/kustomize/base/
+helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwolf-system --create-namespace
 ```
 
 ### Option E: Single Manifest (Quickest)
@@ -169,10 +171,10 @@ kubectl get crds | grep bmo.metal3.io
 # telemetrypolicies.bmo.metal3.io
 
 # Run post-install verification
-make selftest
+kubectl get pods -n ironwolf-system
 
 # Full health check
-./scripts/health-check.sh
+kubectl get pods -n ironwolf-system
 ```
 
 ---
@@ -1113,13 +1115,13 @@ In addition to hardware backups, you can back up all CRD resources:
 
 ```bash
 # Backup all IronWolf resources
-./scripts/backup-state.sh
+# Backup CRDs/state with your platform backup tool or Velero
 
 # Restore from backup
-./scripts/restore-state.sh /path/to/backup.tar.gz
+# Restore from your platform backup / Velero restore /path/to/backup.tar.gz
 
 # Dry run restore
-./scripts/restore-state.sh --backup /path/to/backup.tar.gz --dry-run
+# Restore from your platform backup / Velero restore --backup /path/to/backup.tar.gz --dry-run
 ```
 
 ---
@@ -1207,7 +1209,7 @@ Inspect and report on BareMetalHost resources from the command line.
 
 ```bash
 # Build
-make build-tools
+# CLI tools ship with the commercial package
 
 # List all hosts
 ./bin/bmh-inspector list
@@ -1233,7 +1235,7 @@ Manage firmware updates for BareMetalHosts.
 
 ```bash
 # Build
-make build-tools
+# CLI tools ship with the commercial package
 
 # Show firmware status for all hosts
 ./bin/firmware-updater status
@@ -1264,16 +1266,16 @@ Both CLI tools use a 30-second timeout for Kubernetes API calls (configurable vi
 
 ```bash
 # Run automated pre-flight checks
-./scripts/preflight-check.sh
+kubectl get ns ironwolf-system && kubectl get crds | grep bmo.metal3.io
 
 # Auto-fix common issues
-./scripts/preflight-check.sh --fix
+kubectl get crds | grep bmo.metal3.io && kubectl get pods -n ironwolf-system
 ```
 
 ### Deploy
 
 ```bash
-./scripts/deploy.sh \
+# packaged operator tooling (provided with your license) \
   --env production \
   --image ghcr.io/zyvorai/ironwolf:v1.0.0 \
   --replicas 2 \
@@ -1283,7 +1285,7 @@ Both CLI tools use a 30-second timeout for Kubernetes API calls (configurable vi
 Or with Helm:
 
 ```bash
-helm install ironwolf deploy/helm/ironwolf/ \
+helm install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
   --namespace ironwolf-system \
   --create-namespace \
   --set image.tag=v1.0.0 \
@@ -1298,23 +1300,23 @@ helm install ironwolf deploy/helm/ironwolf/ \
 
 ```bash
 # Run selftest
-make selftest
+kubectl get pods -n ironwolf-system
 
 # Or manually
-./scripts/selftest.sh
+kubectl get pods,deploy -n ironwolf-system
 
 # Health check
-./scripts/health-check.sh
+kubectl get pods -n ironwolf-system
 
 # JSON output for monitoring
-./scripts/health-check.sh --json
+kubectl get pods -n ironwolf-system -o wide
 ```
 
 ### Upgrades
 
 ```bash
 # Rolling upgrade with auto-rollback on failure
-./scripts/upgrade.sh --image ghcr.io/zyvorai/ironwolf:v1.1.0 --rollback-on-fail
+# packaged operator tooling (provided with your license) --image ghcr.io/zyvorai/ironwolf:v1.1.0 --rollback-on-fail
 ```
 
 ### Manager Flags
@@ -1342,7 +1344,7 @@ SSRF protection is built in: all outbound webhook requests block private/reserve
 
 ```bash
 # Quick diagnostics
-./scripts/health-check.sh --json | python3 -m json.tool
+kubectl get pods -n ironwolf-system -o wide
 
 # Controller logs
 kubectl logs -n ironwolf-system \
@@ -1351,7 +1353,7 @@ kubectl logs -n ironwolf-system \
 # Collect full debug bundle
 make debug-bundle
 # or
-./scripts/collect-debug-bundle.sh
+kubectl -n ironwolf-system logs deploy/ironwolf-controller-manager --tail=200
 
 # Check all resources at a glance
 for kind in cc fwp mw pp hwp rs ap np sp ep tp hwb rj; do
@@ -1486,10 +1488,10 @@ Messages are JSON with `{type: string, data: object}` format.
 
 ```bash
 # Build
-make build          # Manager binary
-make build-tools    # CLI tools (bmh-inspector, firmware-updater)
-make build-all      # Everything (manager + tools + web)
-make build-cross    # Cross-compile for linux/darwin amd64/arm64
+# Binaries ship with the commercial package          # Manager binary
+# CLI tools ship with the commercial package    # CLI tools (bmh-inspector, firmware-updater)
+# Binaries ship with the commercial package      # Everything (manager + tools + web)
+# Binaries ship with the commercial package    # Cross-compile for linux/darwin amd64/arm64
 
 # Web Dashboard
 make web            # Build frontend + backend
@@ -1520,7 +1522,7 @@ make kind-reload    # Rebuild and reload into Kind
 make kind-destroy   # Destroy Kind cluster
 
 # Ops
-make selftest       # Post-install verification
+kubectl get pods -n ironwolf-system       # Post-install verification
 make preflight      # Pre-deployment checks
 make health         # Full-stack health check
 make debug-bundle   # Collect diagnostics
