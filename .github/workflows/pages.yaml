@@ -1,11 +1,8 @@
-# Requires GitHub Pages enabled with Source = "GitHub Actions"
-# (Settings → Pages), or once via:
-#   gh api repos/zyvorai/zyvor-ironwolf-site/pages -X POST -f build_type=workflow
+# Public site is served by GitHub Pages (legacy) from branch main, path /.
+# This workflow is optional/manual — Actions runners were unreliable for the first polish push.
 name: Deploy Docs Site
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch: {}
 
 concurrency:
