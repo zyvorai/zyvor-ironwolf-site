@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IronWolf — Metal3 bare-metal automation</title>
+  <meta name="description" content="IronWolf extends Metal3 Bare Metal Operator with fleet policies, ClusterClaim scheduling, firmware compliance, approvals, and a production dashboard." />
+  <meta name="theme-color" content="#f5f5f7" />
+  <link rel="canonical" href="https://zyvorai.github.io/zyvor-ironwolf-site/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="IronWolf" />
+  <meta property="og:title" content="IronWolf — Metal3 bare-metal automation" />
+  <meta property="og:description" content="Enterprise fleet automation on Metal3: claims, firmware, quarantine, approvals, and a polished product package." />
+  <meta property="og:url" content="https://zyvorai.github.io/zyvor-ironwolf-site/" />
+  <meta property="og:image" content="https://zyvorai.github.io/zyvor-ironwolf-site/assets/social/og-image.jpg" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="IronWolf — Metal3 bare-metal automation" />
+  <meta name="twitter:description" content="Enterprise fleet automation on Metal3 with operator CRDs, Helm product package, and dashboard." />
+  <meta name="twitter:image" content="https://zyvorai.github.io/zyvor-ironwolf-site/assets/social/og-image.jpg" />
+
+  <link rel="icon" href="assets/brand/zyvor-mark.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="nav">
+      <a class="brand" href="./">
+        <img src="assets/brand/zyvor-mark.svg" alt="" width="28" height="28" />
+        IronWolf
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="library.html">Docs</a>
+        <a href="https://github.com/zyvorai/zyvor-ironwolf-site">GitHub</a>
+        <a class="btn btn-ghost" href="https://zyvor.dev">Zyvor</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="hero-kicker reveal">Zyvor · Bare metal Kubernetes</p>
+        <h1 class="hero-title reveal reveal-delay-1">IronWolf</h1>
+        <p class="hero-lede reveal reveal-delay-2">
+          Metal3 bare-metal automation for enterprise fleets — claims, firmware,
+          quarantine, approvals, and a product-ready Helm package.
+        </p>
+        <div class="hero-actions reveal reveal-delay-3">
+          <a class="btn btn-primary" href="#install">Install the package</a>
+          <a class="btn btn-ghost" href="library.html">Browse documentation</a>
+        </div>
+        <figure class="hero-visual reveal reveal-delay-3">
+          <img
+            src="assets/social/og-image.jpg"
+            width="1280"
+            height="720"
+            alt="IronWolf — Metal3 bare-metal automation for enterprise fleets"
+          />
+        </figure>
+      </section>
+
+      <section class="section" id="features">
+        <p class="section-kicker reveal">Fleet operations</p>
+        <h2 class="section-title reveal">Built for day-2 bare metal.</h2>
+        <p class="section-lede reveal">
+          Operator CRDs on Metal3, a production dashboard, and packaging seeds so
+          <code>helm install</code> feels like a finished product.
+        </p>
+        <div class="feature-rail">
+          <article class="feature reveal">
+            <h3>ClusterClaim + what-if</h3>
+            <p>Schedule control planes and workers with binpack, spread, or topology-aware strategies — including dry-run capacity plans.</p>
+          </article>
+          <article class="feature reveal reveal-delay-1">
+            <h3>Fleet health &amp; quarantine</h3>
+            <p>Scored fleet grade, firmware compliance CSV, and host quarantine that blocks destructive mutations.</p>
+          </article>
+          <article class="feature reveal reveal-delay-2">
+            <h3>Approvals &amp; product package</h3>
+            <p>Two-person review with Slack notify, branding/notify seeds, starter AlertPolicy, and package readiness checks.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="install">
+        <p class="section-kicker reveal">Quick start</p>
+        <h2 class="section-title reveal">Ship the product package.</h2>
+        <p class="section-lede reveal">
+          Chain production values with the packaging overlay for branding, notify prefs, monitoring hooks, and a starter alert policy.
+          Charts and images ship with your commercial package — this site is docs and product pages only.
+        </p>
+        <div class="install reveal">
+          <pre><code>helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf \
+  --namespace ironwolf-system --create-namespace \
+  -f values-production.yaml \
+  -f values-package.yaml \
+  --set dashboard.observability.grafanaUrl=http://HOST:30301
+
+# Readiness checklist
+curl -sS -H "X-API-Key: $IRONWOLF_API_KEY" \
+  https://dashboard/api/v1/package/readiness</code></pre>
+        </div>
+      </section>
+
+      <section class="section" id="docs">
+        <p class="section-kicker reveal">Documentation</p>
+        <h2 class="section-title reveal">Everything operators need.</h2>
+        <p class="section-lede reveal">Guides live on this Pages site. Source code is private.</p>
+        <div class="doc-grid">
+          <a class="doc-link reveal" href="docs/getting-started.md">
+            <strong>Getting started</strong>
+            <span>Install options, licensing, first claim</span>
+          </a>
+          <a class="doc-link reveal reveal-delay-1" href="docs/helm-values.md">
+            <strong>Helm values</strong>
+            <span>Production + values-package product seeds</span>
+          </a>
+          <a class="doc-link reveal" href="docs/architecture.md">
+            <strong>Architecture</strong>
+            <span>Operator, dashboard, Metal3 foundation</span>
+          </a>
+          <a class="doc-link reveal reveal-delay-1" href="docs/customer/using-the-dashboard.md">
+            <strong>Using the dashboard</strong>
+            <span>Approvals, quarantine, capacity</span>
+          </a>
+          <a class="doc-link reveal" href="docs/production-checklist.md">
+            <strong>Production checklist</strong>
+            <span>HA, TLS, approvals, Redis</span>
+          </a>
+          <a class="doc-link reveal reveal-delay-1" href="docs/openapi/ironwolf-dashboard-api.yaml">
+            <strong>OpenAPI</strong>
+            <span>Dashboard REST contract</span>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>IronWolf · Zyvor · © 2026</div>
+      <div>
+        <a href="https://github.com/zyvorai/zyvor-ironwolf-site">Site repo</a>
+        ·
+        <a href="https://zyvor.dev">zyvor.dev</a>
+      </div>
+    </footer>
+  </div>
+  <script src="assets/js/site.js" defer></script>
+</body>
+</html>

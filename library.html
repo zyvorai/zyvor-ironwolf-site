@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IronWolf Docs Library</title>
+  <meta name="description" content="Documentation library for IronWolf — getting started, Helm packaging, operations, customer portal, and API." />
+  <link rel="canonical" href="https://zyvorai.github.io/zyvor-ironwolf-site/library.html" />
+  <meta property="og:title" content="IronWolf Docs Library" />
+  <meta property="og:description" content="Guides for operators, platform teams, and customers." />
+  <meta property="og:image" content="https://zyvorai.github.io/zyvor-ironwolf-site/assets/social/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://zyvorai.github.io/zyvor-ironwolf-site/assets/social/og-image.jpg" />
+  <link rel="icon" href="assets/brand/zyvor-mark.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body>
+  <div class="shell">
+    <header class="nav">
+      <a class="brand" href="./">
+        <img src="assets/brand/zyvor-mark.svg" alt="" width="28" height="28" />
+        IronWolf
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="./">Home</a>
+        <a href="https://github.com/zyvorai/zyvor-ironwolf-site">GitHub</a>
+        <a class="btn btn-ghost" href="https://zyvor.dev">Zyvor</a>
+      </nav>
+    </header>
+
+    <main class="section">
+      <p class="section-kicker reveal">Library</p>
+      <h1 class="section-title reveal">Documentation map</h1>
+      <p class="section-lede reveal">Public guides for operators and platform teams. Product source is private.</p>
+
+      <h2 class="section-title reveal" style="font-size:1.35rem;margin-top:2rem">Start</h2>
+      <div class="doc-grid">
+        <a class="doc-link reveal" href="docs/getting-started.md"><strong>Getting started</strong><span>Install, license, first host</span></a>
+        <a class="doc-link reveal" href="docs/tutorial.md"><strong>Tutorial</strong><span>End-to-end walkthrough</span></a>
+        <a class="doc-link reveal" href="docs/customer/README.md"><strong>Customer manual</strong><span>Dashboard orientation</span></a>
+        <a class="doc-link reveal" href="docs/customer/using-the-dashboard.md"><strong>Using the dashboard</strong><span>Approvals, quarantine, capacity</span></a>
+      </div>
+
+      <h2 class="section-title reveal" style="font-size:1.35rem;margin-top:2.5rem">Package &amp; production</h2>
+      <div class="doc-grid">
+        <a class="doc-link reveal" href="docs/helm-values.md"><strong>Helm values</strong><span>values-package product seeds</span></a>
+        <a class="doc-link reveal" href="docs/production-checklist.md"><strong>Production checklist</strong><span>HA, TLS, approvals, Redis</span></a>
+        <a class="doc-link reveal" href="docs/openapi/ironwolf-dashboard-api.yaml"><strong>OpenAPI</strong><span>Dashboard REST contract (YAML)</span></a>
+        <a class="doc-link reveal" href="docs/guides/hardware-certification.md"><strong>Hardware certification</strong><span>Matrix + physical BMC profiles</span></a>
+      </div>
+
+      <h2 class="section-title reveal" style="font-size:1.35rem;margin-top:2.5rem">Platform</h2>
+      <div class="doc-grid">
+        <a class="doc-link reveal" href="docs/architecture.md"><strong>Architecture</strong><span>Layers and control plane</span></a>
+        <a class="doc-link reveal" href="docs/api-reference.md"><strong>API reference</strong><span>CRDs and dashboard API</span></a>
+        <a class="doc-link reveal" href="docs/operations-guide.md"><strong>Operations</strong><span>Day-2 runbooks</span></a>
+        <a class="doc-link reveal" href="docs/troubleshooting.md"><strong>Troubleshooting</strong><span>Common failure modes</span></a>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div>IronWolf docs · Zyvor</div>
+      <a href="./">← Back to home</a>
+    </footer>
+  </div>
+  <script src="assets/js/site.js" defer></script>
+</body>
+</html>

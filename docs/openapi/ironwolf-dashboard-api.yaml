@@ -1,0 +1,688 @@
+openapi: 3.0.3
+info:
+  title: IronWolf Dashboard API
+  version: 1.0.0
+  description: REST API for the IronWolf bare-metal dashboard (`web/internal/api`).
+servers:
+  - url: /api/v1
+paths:
+  /health:
+    get:
+      summary: Health probe
+  /whoami:
+    get:
+      summary: Authenticated role and tenant
+  /auth/login:
+    post:
+      summary: Exchange username (email or role) and password (API key) for session
+  /portal/signup:
+    post:
+      summary: Public customer self-registration (multipart; Pending approval)
+  /portal/accounts:
+    get:
+      summary: List customer accounts (admin/operator)
+  /portal/accounts/invite:
+    post:
+      summary: Invite customer and issue credentials (admin/operator)
+  /portal/accounts/{id}/approve:
+    post:
+      summary: Approve pending signup and email credentials
+  /portal/accounts/{id}/reject:
+    post:
+      summary: Reject pending signup
+  /portal/accounts/{id}/proof:
+    get:
+      summary: Download business proof attachment
+  /hosts:
+    get:
+      summary: List BareMetalHosts
+    post:
+      summary: Register a host
+  /hosts/import:
+    post:
+      summary: Bulk-import BareMetalHosts (JSON array)
+      responses:
+        '200':
+          description: Import summary (per-host success/error)
+        '207':
+          description: Partial success
+  /hosts/{ns}/{name}:
+    get:
+      summary: Get host detail
+  /metrics/history:
+    get:
+      summary: Historical fleet metrics snapshots
+      parameters:
+        - name: range
+          in: query
+          schema:
+            type: string
+            enum: [1h, 6h, 24h]
+      responses:
+        '200':
+          description: Metrics history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsHistory'
+  /observability/config:
+    get:
+      summary: Grafana/Prometheus discovery config
+  /observability/summary:
+    get:
+      summary: Observability summary with overview + telemetry
+  /cluster/capacity:
+    get:
+      summary: Cluster node capacity summary
+  /capacity/plan:
+    post:
+      summary: Server-side bare-metal capacity what-if plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimDryRunRequest'
+      responses:
+        '200':
+          description: Capacity plan result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CapacityPlanResult'
+  /ws:
+    get:
+      summary: WebSocket upgrade for live overview/host/approval/bootstrap events
+  /clusterclaims:
+    get:
+      summary: List cluster claims
+    post:
+      summary: Create cluster claim
+  /clusterclaims/{ns}/{name}:
+    get:
+      summary: Get cluster claim
+  /clusterclaims/{ns}/{name}/bootstrap:
+    get:
+      summary: Bootstrap manifest preview
+    post:
+      summary: Apply bootstrap (sync or async)
+  /clusterclaims/{ns}/{name}/bootstrap/status:
+    get:
+      summary: Bootstrap status for claim
+  /clusterclaims/{ns}/{name}/bootstrap/jobs/{id}:
+    get:
+      summary: Async bootstrap job status
+  /clusterclaims/{ns}/{name}/teardown:
+    post:
+      summary: Teardown CAPI resources for claim
+  /overview:
+    get:
+      summary: Dashboard overview aggregate
+  /audit:
+    get:
+      summary: Recent audit log entries
+  /e2e/lab/jobs:
+    get:
+      summary: List lab E2E jobs
+    post:
+      summary: Start lab E2E job
+  /images:
+    get:
+      summary: List image registry entries
+  /usage/summary:
+    get:
+      summary: Bandwidth usage summary across hosts
+  /invoices:
+    get:
+      summary: List tenant invoices
+    post:
+      summary: Publish an invoice (admin/operator)
+    put:
+      summary: Replace invoice list (admin/operator)
+  /cart:
+    get:
+      summary: Get shopping cart
+    put:
+      summary: Replace cart items
+  /cart/catalog:
+    get:
+      summary: List order catalog (ConfigMap or builtin)
+  /cart/checkout:
+    post:
+      summary: Checkout cart into a SupportTicket order
+  /storage/buckets:
+    get:
+      summary: List object storage buckets (S3 or ConfigMap)
+  /storage/buckets/{bucket}/objects:
+    get:
+      summary: List objects in a bucket
+  /ssh-keys:
+    get:
+      summary: Tenant SSH public key vault
+    put:
+      summary: Replace tenant SSH keys
+  /notify-prefs:
+    get:
+      summary: Tenant notification preferences
+    put:
+      summary: Update notification preferences
+  /system-status:
+    get:
+      summary: Platform status components and maintenance posts
+    put:
+      summary: Replace status components (admin/operator)
+  /security/scans:
+    get:
+      summary: External/security scan findings
+  /hosts/{ns}/{name}/alias:
+    put:
+      summary: Set BareMetalHost alias label
+  /hosts/{ns}/{name}/install:
+    post:
+      summary: Install or reinstall OS with cloud-init password
+  /hosts/{ns}/{name}/traffic:
+    get:
+      summary: Host bandwidth time series
+  /hosts/{ns}/{name}/vpn-profile:
+    get:
+      summary: Download OpenVPN profile for host
+  /hostipaddresses:
+    get:
+      summary: List HostIPAddress resources
+  /availabilitymonitors:
+    get:
+      summary: List AvailabilityMonitor resources
+    post:
+      summary: Create AvailabilityMonitor
+  /supporttickets:
+    get:
+      summary: List SupportTicket resources
+    post:
+      summary: Create SupportTicket
+  /approvals:
+    get:
+      summary: List destructive-action approval requests
+      responses:
+        '200':
+          description: Approval list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalList'
+    post:
+      summary: Create an approval request for a destructive host action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalCreate'
+      responses:
+        '202':
+          description: Approval queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+  /approvals/{id}:
+    get:
+      summary: Get an approval request by id
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+      responses:
+        '200':
+          description: Approval request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequest'
+  /approvals/{id}/approve:
+    post:
+      summary: Approve a pending request (admin)
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+      responses:
+        '200':
+          description: Approved
+  /approvals/{id}/reject:
+    post:
+      summary: Reject a pending request (admin)
+      parameters:
+        - $ref: '#/components/parameters/ApprovalId'
+      responses:
+        '200':
+          description: Rejected
+  /firmware/compliance:
+    get:
+      summary: Fleet firmware compliance aggregate across FirmwareProfiles
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [json, csv]
+          description: Set to csv for downloadable compliance export
+      responses:
+        '200':
+          description: Compliance report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirmwareCompliance'
+            text/csv:
+              schema:
+                type: string
+  /fleet/health:
+    get:
+      summary: Scored fleet health report (hosts, firmware, approvals)
+      responses:
+        '200':
+          description: Fleet health score and attention list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FleetHealth'
+  /package/readiness:
+    get:
+      summary: Install / product-package readiness checklist
+      responses:
+        '200':
+          description: Required and optional readiness checks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PackageReadiness'
+  /notify-prefs/test:
+    post:
+      summary: Send a test Slack/webhook using saved notify prefs
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel:
+                  type: string
+                  enum: [slack, webhook, auto]
+      responses:
+        '200':
+          description: Delivery attempted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotifyPrefsTestResult'
+        '502':
+          description: One or more deliveries failed
+  /clusterclaims/dry-run:
+    post:
+      summary: What-if scheduling dry-run for a prospective ClusterClaim
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimDryRunRequest'
+      responses:
+        '200':
+          description: Feasibility and selected candidate hosts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimDryRunResult'
+  /hosts/{ns}/{name}/quarantine:
+    post:
+      summary: Quarantine or clear quarantine on a BareMetalHost
+      parameters:
+        - name: ns
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuarantineRequest'
+      responses:
+        '200':
+          description: Quarantine state updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarantineResult'
+  /firmwareprofiles:
+    get:
+      summary: List FirmwareProfile resources
+
+components:
+  parameters:
+    ApprovalId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    ApprovalCreate:
+      type: object
+      required: [action, namespace, name]
+      properties:
+        action:
+          type: string
+          enum: [power_off, power_on, deprovision, delete, reboot]
+        namespace:
+          type: string
+        name:
+          type: string
+        reason:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+    ApprovalRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        action:
+          type: string
+        namespace:
+          type: string
+        name:
+          type: string
+        reason:
+          type: string
+        payload:
+          type: object
+          additionalProperties: true
+        requestedBy:
+          type: string
+        requestedAt:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [pending, approved, rejected, expired, executed]
+        reviewedBy:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+    ApprovalList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApprovalRequest'
+        total:
+          type: integer
+    FirmwareCompliance:
+      type: object
+      properties:
+        compliancePercent:
+          type: number
+        profiles:
+          type: integer
+        matchingHosts:
+          type: integer
+        appliedHosts:
+          type: integer
+        pendingHosts:
+          type: integer
+        errorHosts:
+          type: integer
+        nonCompliant:
+          type: array
+          items:
+            type: object
+            properties:
+              namespace:
+                type: string
+              name:
+                type: string
+              gap:
+                type: integer
+    ClaimDryRunCandidate:
+      type: object
+      properties:
+        namespace:
+          type: string
+        name:
+          type: string
+        score:
+          type: integer
+        cpu:
+          type: integer
+        ramGB:
+          type: integer
+        diskGB:
+          type: integer
+        reasons:
+          type: array
+          items:
+            type: string
+    ClaimDryRunRequest:
+      type: object
+      properties:
+        controlPlaneCount:
+          type: integer
+          minimum: 0
+        workerCount:
+          type: integer
+          minimum: 0
+        schedulingStrategy:
+          type: string
+        matchLabels:
+          type: object
+          additionalProperties:
+            type: string
+        minCPUCores:
+          type: integer
+        minRAMGB:
+          type: integer
+        minDiskGB:
+          type: integer
+        architecture:
+          type: string
+        excludeQuarantined:
+          type: boolean
+    ClaimDryRunResult:
+      type: object
+      properties:
+        feasible:
+          type: boolean
+        requiredHosts:
+          type: integer
+        availableCandidates:
+          type: integer
+        selected:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimDryRunCandidate'
+        candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimDryRunCandidate'
+        strategy:
+          type: string
+        message:
+          type: string
+    CapacityPlanResult:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [sufficient, partial, insufficient]
+        totalNeeded:
+          type: integer
+        available:
+          type: integer
+        matchingHosts:
+          type: integer
+        feasible:
+          type: boolean
+        selected:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimDryRunCandidate'
+        message:
+          type: string
+    FleetHealth:
+      type: object
+      properties:
+        score:
+          type: number
+        grade:
+          type: string
+          enum: [A, B, C, F]
+        hosts:
+          type: object
+          properties:
+            total:
+              type: integer
+            available:
+              type: integer
+            error:
+              type: integer
+            quarantined:
+              type: integer
+            provisioning:
+              type: integer
+        firmware:
+          type: object
+          properties:
+            matching:
+              type: integer
+            applied:
+              type: integer
+            pending:
+              type: integer
+            errors:
+              type: integer
+        pendingApprovals:
+          type: integer
+        approvalsEnabled:
+          type: boolean
+        attention:
+          type: array
+          items:
+            type: object
+            properties:
+              kind:
+                type: string
+              namespace:
+                type: string
+              name:
+                type: string
+              reason:
+                type: string
+              message:
+                type: string
+    PackageReadiness:
+      type: object
+      properties:
+        ready:
+          type: boolean
+        requiredOk:
+          type: integer
+        requiredTotal:
+          type: integer
+        optionalOk:
+          type: integer
+        optionalTotal:
+          type: integer
+        namespace:
+          type: string
+        provisioner:
+          type: string
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReadinessCheck'
+    ReadinessCheck:
+      type: object
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        ok:
+          type: boolean
+        detail:
+          type: string
+        href:
+          type: string
+        required:
+          type: boolean
+    QuarantineRequest:
+      type: object
+      required: [quarantined]
+      properties:
+        quarantined:
+          type: boolean
+        reason:
+          type: string
+    QuarantineResult:
+      type: object
+      properties:
+        namespace:
+          type: string
+        name:
+          type: string
+        quarantined:
+          type: boolean
+        reason:
+          type: string
+    MetricsHistory:
+      type: object
+      properties:
+        range:
+          type: string
+          enum: [1h, 6h, 24h]
+        snapshots:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricsSnapshot'
+    MetricsSnapshot:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        totalHosts:
+          type: integer
+        availableHosts:
+          type: integer
+        claimedHosts:
+          type: integer
+        errorHosts:
+          type: integer
+        totalPowerWatts:
+          type: integer
+        cpuUtilization:
+          type: number
+        memoryUtilization:
+          type: number
+    NotifyPrefsTestResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+              ok:
+                type: boolean
+              error:
+                type: string
