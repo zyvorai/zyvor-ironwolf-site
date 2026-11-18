@@ -21,6 +21,8 @@
 
 [**Docs site**](https://zyvorai.github.io/zyvor-ironwolf-site/) · [**Library**](https://zyvorai.github.io/zyvor-ironwolf-site/library.html) · [**OpenAPI**](docs/openapi/ironwolf-dashboard-api.yaml) · [**Talk to Zyvor**](https://zyvor.dev/?utm_source=github&utm_medium=ironwolf&utm_campaign=readme_hero)
 
+[Client overview (PDF)](docs/IronWolf-Client-Overview.pdf)
+
 </div>
 
 ---
