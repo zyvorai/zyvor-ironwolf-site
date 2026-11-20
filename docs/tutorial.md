@@ -129,7 +129,9 @@ helm upgrade --install ironwolf oci://ghcr.io/zyvorai/charts/ironwolf -n ironwol
 ### Option E: Single Manifest (Quickest)
 
 ```bash
-kubectl apply -f https://github.com/zyvorai/ironwolf/releases/latest/download/install.yaml
+# The IronWolf source repository is private. Request the install manifest
+# and a trial key from sales@zyvor.dev, then:
+kubectl apply -f install.yaml
 ```
 
 ### Verify Installation

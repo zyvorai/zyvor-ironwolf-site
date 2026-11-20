@@ -14,7 +14,9 @@
 ### Option 1: Single Manifest (Quickest)
 
 ```bash
-kubectl apply -f https://github.com/zyvorai/ironwolf/releases/latest/download/install.yaml
+# The IronWolf source repository is private. Request the install manifest
+# and a trial key from sales@zyvor.dev, then:
+kubectl apply -f install.yaml
 ```
 
 ### Option 2: Helm product package (recommended)
