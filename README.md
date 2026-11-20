@@ -104,6 +104,20 @@ Full walkthrough: [docs/getting-started.md](docs/getting-started.md) · Helm ref
 - Lab release E2E and Terraform Registry publish need CI secrets on your side.
 - Production HA (TLS, Redis WS bridge, license) is an operator runbook, not a checkbox we flip for you.
 
+## Pricing
+
+| Plan | Elsewhere (USD, excl. tax) | India (INR, incl. 18% GST) |
+|---|---|---|
+| Professional | USD 400 per bare-metal node per year | INR 39,648 per bare-metal node per year |
+| Enterprise | USD 650 per bare-metal node per year | INR 64,428 per bare-metal node per year |
+| Annual minimum | USD 3,000 | INR 297,360 |
+
+Volume: 256-499 nodes -10%, 500-999 -15%, 1,000 and above -20%; multi-year: 2 years -5%, 3 years -10%; discounts capped at 25% together. Minimums are annual contract values and apply after discounts.
+
+Prices: INR incl. 18% GST in India; US dollars excl. tax elsewhere (VAT, GST or sales tax added where applicable). Pay online by UPI, card or netbanking where a buy page exists; international cards work (charged in rupees); or request a US-dollar invoice by bank transfer. Custom pricing: contact [sales@zyvor.dev](mailto:sales@zyvor.dev).
+
+Trial: a 30-day trial key is available at [zyvor.dev/contact?intent=trial&product=ironwolf](https://zyvor.dev/contact?intent=trial&product=ironwolf). Buy / get a quote: [zyvor.dev/buy](https://zyvor.dev/buy).
+
 ## Talk to Zyvor
 
 [Book a demo](https://zyvor.dev/schedule?utm_source=github&utm_medium=ironwolf&utm_campaign=readme_cta) · [30-day PoC](https://zyvor.dev/poc?utm_source=github&utm_medium=ironwolf&utm_campaign=readme_cta) · [sales@zyvor.dev](mailto:sales@zyvor.dev)

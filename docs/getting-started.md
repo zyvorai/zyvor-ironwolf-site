@@ -93,6 +93,8 @@ IronWolf licence error: No IronWolf licence key found.
 Request a 30-day trial at: https://zyvor.dev/contact?intent=trial&product=ironwolf
 ```
 
+Prices (USD 400 / 650 per bare-metal node per year elsewhere, INR 39,648 / 64,428 incl. GST in India): see the [README](../README.md#pricing) or [zyvor.dev/buy](https://zyvor.dev/buy).
+
 `manager --version` and `manager --help` work without a licence, so you can confirm what you
 downloaded before requesting a key.
 
